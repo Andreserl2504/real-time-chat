@@ -7,7 +7,7 @@ const PORT = process.env.PORT ?? '3000'
 
 app.use(logger('dev'))
 app.get('/', (req, res) => {
-  res.send('<h1>real time chat</h1>')
+  res.sendFile(process.cwd() + '/client/index.html')
 })
 
 app.listen(PORT, () => {
