@@ -1,12 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+    />
     <title>Real time chat</title>
-</head>
-<body>
-    <h1>lakjsdlakjslkd</h1>
-</body>
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chat {
+        height: 500px;
+        background-color: #112;
+        padding: 20px;
+        border-radius: 25px;
+      }
+      .input-container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+      }
+      .input-container > input {
+        width: 100%;
+      }
+      .messages {
+        height: calc(100% - 50px);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .message-constainer  {
+        width: 100%;
+        display: flex;
+
+      }
+      .message-constainer > span {
+        background-color: rgb(0, 134, 223);
+        padding: 5px;
+        border-radius: 25px;
+        font-size: small;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js'
+
+      const socket = io({
+        auth: {
+          serverOffset: 0
+        }
+      })
+      const sentBtn = document.getElementById('sent-btn')
+      const form = document.getElementById('form')
+      const messagesContainer = document.getElementById('messages')
+      const inputMessage = document.getElementById('input-message')
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        if (inputMessage.value) {
+          socket.emit('chat message', inputMessage.value)
+          inputMessage.value = ''
+        }
+      })
+      socket.on('chat message', (msg, serverOffset) => {
+        const newMessage = `<div class="message-constainer"><span>${msg}</span></div>`
+        messagesContainer.innerHTML += newMessage
+        socket.auth.serverOffset = serverOffset
+      })
+    </script>
+    <main class="chat">
+      <section class="messages" id="messages"></section>
+      <form class="input-container" id="form">
+        <input
+          type="text"
+          placeholder="Write a message"
+          id="input-message"
+        /><button id="sent-btn">Send</button>
+      </form>
+    </main>
+  </body>
 </html>
